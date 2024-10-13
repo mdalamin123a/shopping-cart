@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+   <title>Shopping Cart</title>
+   <meta charset="utf-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1">
+   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.css" rel="stylesheet" />
+   <link href="style.css" rel="stylesheet">
+</head>
+
+<body>
+
+   <section>
+      <div class="container">
+         <div class="cart">
+            <div class="col-md-12 col-lg-10 mx-auto">
+               <div class="cart-item">
+                  <div class="row">
+                     <div class="col-md-7 center-item">
+                        <img src="images/product-1.png" alt="">
+                        <h5>iPhone 11 128GB Black</h5>
+                     </div>
+
+                     <div class="col-md-5 center-item">
+                        <div class="input-group number-spinner">
+                           <button class="btn btn-default decreaseItem"><i class="fas fa-minus"></i></button>
+                           <input type="text" class="form-control text-center"  id="quantity" value="1">
+                           <button class="btn btn-default increaseItem"><i class="fas fa-plus"></i></button>
+                        </div>
+                        <h5>$<span class="price">1219</span></h5>
+                        <img src="images/remove.png" alt="" class="remove-item">
+                     </div>
+                  </div>
+               </div>
+
+               <div class="cart-item">
+                  <div class="row">
+                     <div class="col-md-7 center-item mx-auto">
+                        <img src="images/product-2.png" alt="">
+                        <h5>iPhone 11 Silicone Case - Black</h5>
+                     </div>
+                     <div class="col-md-5 center-item">
+                        <div class="input-group number-spinner">
+                           <button class="btn btn-default decreaseItem"><i class="fas fa-minus"></i></button>
+                           <input type="text" class="form-control text-center" id="quantity" value="1">
+                           <button class="btn btn-default increaseItem"><i class="fas fa-plus"></i></button>
+                        </div>
+                        <h5>$<span class="price">59</span></h5>
+                        <img src="images/remove.png" alt="" class="remove-item">
+                     </div>
+                  </div>
+               </div>
+
+               <div class="cart-item">
+                  <div class="row">
+
+                     <div class="col-md-8">
+                        <h5>Subtotal: </h5>
+                        <h5>Tax:</h5>
+                        <h5>Total:</h5>
+                     </div>
+
+                     <div class="col-md-4 status">
+                        <h5 id="subtotal">$<span>1278</span> </h5>
+                        <h5>$0</h5>
+                        <h5 id="total">$<span>1278</span> </h5>
+                     </div>
+                  </div>
+               </div>
+               <div class="col-md-12 pt-4 pb-4">
+                  <button type="button" class="btn btn-success check-out">Check Out</button>
+               </div>
+            </div>
+         </div>
+      </div>
+   </section>
+   <script>
+
+      // increase item
+    const increaseBtns = document.querySelectorAll(".increaseItem");
+
+    for(let i = 0; i < increaseBtns.length; i++) {
+        const button = increaseBtns[i];
+        button.addEventListener("click", function(event) {
+            const quantityElement = this.previousElementSibling;
+            const quantity = getQuantity(quantityElement, 1);
+            updateSpanText(this, quantity, 1);
+        });
+    }
+
+   // decrease item
+   const decreaseBtns = document.querySelectorAll(".decreaseItem");
+   for(var i = 0; i < decreaseBtns.length; i++){
+      const button = decreaseBtns[i];
+      button.addEventListener("click",function(event){
+         const quantityElement = this.nextElementSibling;
+         const quantity = getQuantity(quantityElement, -1);
+         updateSpanText(this, quantity, 0);
+      });
+   }
+
+    // get and show quantity
+    function getQuantity(element, _quantity){
+        const quantity = element.value;
+        const quantityNumber = parseInt(quantity);
+        let totalQuantity = quantityNumber + _quantity;
+        if(totalQuantity < 1){
+            element.value = 1;
+            totalQuantity = 0;
+        }else{
+           element.value = totalQuantity;
+        }
+        console.log("c", totalQuantity)
+        return totalQuantity;
+    }
+    
+    // update total price
+    function updateSpanText(element, quantity, position) {
+         const priceParentElement = element.parentNode.nextElementSibling;
+         const priceElement = priceParentElement.firstElementChild;
+         const currentTotalPrice = priceElement.innerText;
+         const currentPriceTotalNumber = parseFloat(currentTotalPrice);
+         let singlePrice = 0;
+
+         if(quantity < 1){
+            singlePrice = currentTotalPrice;
+            quantity = 1;
+         }else{
+            if(position == 1){
+               singlePrice = currentPriceTotalNumber / (quantity-1);
+            }else{
+               singlePrice = currentPriceTotalNumber / (quantity+1);
+            }
+         }
+         
+         const totalPrice = singlePrice * quantity;
+         priceElement.innerText = totalPrice;
+         if(position == 1){
+            updateTotal(singlePrice, quantity);
+         }else{
+            updateTotal(-singlePrice, quantity);
+         }
+         console.log(element, quantity, singlePrice)
+    }
+
+    // update total price
+    function updateTotal(singlePrice, quantity){
+      const subTotalParent = document.getElementById("subtotal");
+      const subTotal = subTotalParent.firstElementChild;
+      const currentSubTotalPrice = subTotal.innerText;
+      const currentTotalPriceNumber = parseFloat(currentSubTotalPrice);
+      let price = 0;
+      price = currentTotalPriceNumber + singlePrice;
+      subTotal.innerText = price;
+
+      const totalParent = document.getElementById("total");
+      const total = totalParent.firstElementChild;
+      total.innerText = price;
+
+
+    }
+
+   </script>
+</body>
+
+</html>
